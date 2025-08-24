@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define the Node structure for student enrollment
+struct Node {
+    int studentID;
+    char studentName[50];
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+// Function to add a student to a course
+void addStudent(int id, const char* name) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+    newNode->studentID = id;
+    strcpy(newNode->studentName, name);
+    newNode->next = head;
+    head = newNode;
+    printf("Student %s added successfully.\n", name);
+}
+
+// Function to drop a student from a course
+void dropStudent(int id) {
+    struct Node* current = head;
+    struct Node* prev = NULL;
+
+    while (current != NULL && current->studentID != id) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Student not found.\n");
+        return;
+    }
+
+    if (prev == NULL) {
+        head = current->next;
+    } else {
+        prev->next = current->next;
+    }
+
+    free(current);
+    printf("Student with ID %d dropped successfully.\n", id);
+}
+
+// Function to search for a student
+void searchStudent(int id) {
+    struct Node* current = head;
+    int found = 0;
+    while (current != NULL) {
+        if (current->studentID == id) {
+            printf("Student Found: ID: %d, Name: %s\n", current->studentID, current->studentName);
+            found = 1;
+            break;
+        }
+        current = current->next;
+    }
+    if (!found) {
+        printf("Student with ID %d not found.\n", id);
+    }
+}
+
+// Function to display all students in a course
+void displayAllStudents() {
+    struct Node* current = head;
+    if (current == NULL) {
+        printf("No students enrolled.\n");
+        return;
+    }
+    printf("Enrolled Students:\n");
+    while (current != NULL) {
+        printf("ID: %d, Name: %s\n", current->studentID, current->studentName);
+        current = current->next;
+    }
+}
+
+// Function to count the total number of students
+void countStudents() {
+    int count = 0;
+    struct Node* current = head;
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+    printf("Total students enrolled: %d\n", count);
+}
+
+// Function to reverse the student list
+void reverseList() {
+    struct Node* prev = NULL;
+    struct Node* current = head;
+    struct Node* next = NULL;
+
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    head = prev;
+    printf("List reversed successfully.\n");
+}
+
+int main() {
+    // Add students
+    addStudent(101, "Alice");
+    addStudent(102, "Bob");
+    addStudent(103, "Charlie");
+
+    // Display all students
+    displayAllStudents();
+
+    // Count students
+    countStudents();
+
+    // Drop a student
+    dropStudent(102);
+    displayAllStudents();
+
+    // Search for a student
+    searchStudent(103);
+
+    // Reverse the list
+    reverseList();
+    displayAllStudents();
+
+    return 0;
+}
